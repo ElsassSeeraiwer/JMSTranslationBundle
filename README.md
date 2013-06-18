@@ -11,3 +11,5 @@ Code License:
 
 Documentation License:
 [Resources/doc/LICENSE](https://github.com/schmittjoh/JMSTranslationBundle/blob/master/Resources/doc/LICENSE)
+
+test
