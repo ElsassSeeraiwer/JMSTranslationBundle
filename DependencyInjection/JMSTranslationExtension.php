@@ -35,6 +35,7 @@ class JMSTranslationExtension extends Extension
 
         $container->setParameter('jms_translation.source_language', $config['source_language']);
         $container->setParameter('jms_translation.locales', $config['locales']);
+        $container->setParameter('jms_translation.tinymce_mod', $config['tinymce_mod']);
 
         $requests = array();
         foreach ($config['configs'] as $name => $extractConfig) {

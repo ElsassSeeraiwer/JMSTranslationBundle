@@ -42,9 +42,9 @@ class LoaderManager
      * @param string $domain
      * @return mixed
      */
-    public function loadFile($file, $format, $locale, $domain = 'messages')
+    public function loadFile($file, $format, $locale, $domain = 'messages', $selresname = '')
     {
-        return $this->getLoader($format)->load($file, $locale, $domain);
+        return $this->getLoader($format)->load($file, $locale, $domain, $selresname);
     }
 
     /**

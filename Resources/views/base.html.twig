@@ -22,7 +22,9 @@
         </div>
 
         {% block javascripts %}
-        <script language="javascript" type="text/javascript" src="{{ asset("bundles/jmstranslation/js/jquery.js") }}"></script>
+        <script language="javascript" type="text/javascript" src="{{ asset("bundles/jmstranslation/js/jquery.min.js") }}"></script>
+        <script src="{{ asset('bundles/jmstranslation/js/tinymce/tinymce.min.js') }}"></script>
+        <script src="{{ asset('bundles/jmstranslation/js/tinymce/jquery.tinymce.min.js') }}"></script>
         {% endblock %}
     </body>
 </html>

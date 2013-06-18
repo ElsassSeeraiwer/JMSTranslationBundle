@@ -12,47 +12,148 @@
             });
             
             {% if isWriteable is sameas(true) %}
-            $('textarea')
-                .blur(function() {
-                    var self = this;
-                    $.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
-                        type: 'POST',
-                        headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
-                        data: {'_method': 'PUT', 'message': $(this).val()},
-                        error: function() {
-                            $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
-                        },
-                        success: function() {
-                            $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
-                        },
-                        complete: function() {
-                            var parent = $(self).parent();
-                            $(self).data('timeoutId', setTimeout(function() {
-                                $(self).data('timeoutId', undefined);
-                                parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
-                            }, 10000));
-                        }
-                    });
-                })
-                .focus(function() {
-                    this.select();
-                    
-                    var timeoutId = $(this).data('timeoutId');
-                    if (timeoutId) {
-                        clearTimeout(timeoutId);
-                        $(this).data('timeoutId', undefined);
+                {% if selectedDomain not in tinymceMod%}
+                    $('textarea')
+                        .blur(function() {
+                            var self = this;
+                            $.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
+                                type: 'POST',
+                                headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
+                                data: {'_method': 'PUT', 'message': $(this).val()},
+                                error: function() {
+                                    $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
+                                },
+                                success: function() {
+                                    $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
+                                },
+                                complete: function() {
+                                    var parent = $(self).parent();
+                                    $(self).data('timeoutId', setTimeout(function() {
+                                        $(self).data('timeoutId', undefined);
+                                        parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
+                                    }, 10000));
+                                }
+                            });
+                        })
+                        .focus(function() {
+                            this.select();
+                            
+                            var timeoutId = $(this).data('timeoutId');
+                            if (timeoutId) {
+                                clearTimeout(timeoutId);
+                                $(this).data('timeoutId', undefined);
+                            }
+                            
+                            $(this).parent().children('.alert-message').remove();
+                        })
+                    ;
+                {% else %}
+
+                    $('pre.divContent').click(function(){
+                        var selectorID = '#'+(this.id.replace('div_',''));
+
+                        $(selectorID).show();
+                        $('#'+this.id).hide();
+
+                        tinymce.init({
+                            selector: selectorID,
+                            content_css: "/WebITRF/web/bundles/rsitemplate/css/rsi.css,/WebITRF/web/bundles/itrfwebsite/css/itrf.css",
+                            theme : 'modern',
+                            keep_styles: true,
+                            height : 300,
+                            plugins: "hr link table save print anchor searchreplace fullscreen charmap visualblocks image media nonbreaking autolink advlist contextmenu",
+                            toolbar1: "save | undo redo | removeformat | styleselect | fullscreen print | cut copy paste | searchreplace | hr anchor link table charmap visualblocks nonbreaking",
+                            toolbar2: "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | subscript superscript",
+                            contextmenu: "bold italic underline strikethrough | link image inserttable | cell row column deletetable",
+                            tools: "inserttable",
+                            nonbreaking_force_tab: true,
+                            save_enablewhendirty: true,
+                            save_onsavecallback: function() {
+                                tinymce.triggerSave();
+                                $.ajax(updateMessagePath + '?id=' + encodeURIComponent($('#'+this.id).data('id')), {
+                                    type: 'POST',
+                                    headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
+                                    data: {'_method': 'PUT', 'message': $('#'+this.id).val()},
+                                    error: function() {
+                                        $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
+                                    },
+                                    success: function() {
+                                        $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
+                                    },
+                                    complete: function() {
+                                        window.location.reload()
+                                    }
+                                });
+                            },
+                            style_formats : [
+                                {title: 'Titre 1', block: 'h2'},
+                                {title: 'Titre 2', block: 'h3'},
+                                {title: 'Titre 3', block: 'h4'},
+                                {title: 'Important', inline: 'span', styles: {color: '#ff0000'}},
+                                {title: 'Paragraphe important', block: 'p', classes: 'article'},
+                            ]
+                        });
+                    })
+
+
+                    function mySave() {
+                        var self = this;
+                        console.log(this);
+                        /*$.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
+                            type: 'POST',
+                            headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
+                            data: {'_method': 'PUT', 'message': $(this).val()},
+                            error: function() {
+                                $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
+                            },
+                            success: function() {
+                                $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
+                            },
+                            complete: function() {
+                                var parent = $(self).parent();
+                                $(self).data('timeoutId', setTimeout(function() {
+                                    $(self).data('timeoutId', undefined);
+                                    parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
+                                }, 10000));
+                            }
+                        });*/
                     }
-                    
-                    $(this).parent().children('.alert-message').remove();
-                })
-            ;
+
+                    function myInit()
+                    {
+                        console.log(this);
+                    }
+
+                    /*tinymce.init({
+                        selector: "textarea",
+                        content_css: "/WebITRF/web/bundles/rsitemplate/css/rsi.css,/WebITRF/web/bundles/itrfwebsite/css/itrf.css",
+                        theme : 'modern',
+                        keep_styles: true,
+                        height : 300,
+                        plugins: "hr link table save print anchor searchreplace fullscreen charmap visualblocks image media nonbreaking autolink advlist contextmenu",
+                        toolbar1: "save | undo redo | removeformat | styleselect | fullscreen print | cut copy paste | searchreplace | hr anchor link table charmap visualblocks nonbreaking",
+                        toolbar2: "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | subscript superscript",
+                        contextmenu: "bold italic underline strikethrough | link image inserttable | cell row column deletetable",
+                        tools: "inserttable",
+                        nonbreaking_force_tab: true,
+                        save_enablewhendirty: true,
+                        save_onsavecallback: function() { toto = this;},
+                        style_formats : [
+                            {title: 'Titre 1', block: 'h2'},
+                            {title: 'Titre 2', block: 'h3'},
+                            {title: 'Titre 3', block: 'h4'},
+                            {title: 'Important', inline: 'span', styles: {color: '#ff0000'}},
+                            {title: 'Paragraphe important', block: 'p', classes: 'article'},
+                        ]
+                     });*/
+
+                {% endif %}
             {% endif %}
         });
     </script>
 {% endblock %}
 
 {% block body %}
-
     <form id="config" action="{{ path("jms_translation_index") }}" method="get">
         <select name="config" class="span3">
             {% for config in configs %}
@@ -60,7 +161,7 @@
             {% endfor %}
         </select>
     
-        <select name="domain" class="span3">
+        <select name="domain" class="span3" onchange="$('select.resname').val('');">
             {% for domain in domains %}
             <option value="{{ domain }}"{% if domain == selectedDomain %} selected="selected"{% endif %}>{{ domain }}</option>
             {% endfor %}
@@ -69,6 +170,13 @@
         <select name="locale" class="span2">
             {% for locale in locales %}
             <option value="{{ locale }}"{% if locale == selectedLocale %} selected="selected"{% endif %}>{{ locale }}</option>
+            {% endfor %}
+        </select>
+        
+        <select name="resname" class="span5 resname">
+            <option value=""{% if selectedResname == '' %} selected="selected"{% endif %}>ALL</option>
+            {% for id, message in allMessages %}
+            <option value="{{ id }}"{% if id == selectedResname %} selected="selected"{% endif %}>{{ id }}</option>
             {% endfor %}
         </select>
     </form>

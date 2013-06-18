@@ -1,3 +1,4 @@
+{% if selectedDomain not in tinymceMod%}
     <table>
         <thead>
             <tr>
@@ -56,3 +57,66 @@
             {% endfor %}
         </tbody>
     </table>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th width="20%">ID</th>
+                <th width="80%">Translations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, message in messages %}
+            <tr>
+                <td rowspan="2">
+                    <a class="jms-translation-anchor" id="{{ id }}" />
+                        <abbr title="{{ id }}">{{ id|truncate(20) }}</abbr>
+                    </a>
+                    
+                    {% if message.sources|length > 0 %}
+                        <h6>Sources</h6>
+                        <ul>
+                        {% for source in message.sources %}
+                            <li>{{ source }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if message.desc is not empty 
+                            and message.localeString != message.desc
+                            and id != message.desc
+                            and (alternativeMessages[id][sourceLanguage] is not defined
+                                 or alternativeMessages[id][sourceLanguage].localeString != message.desc) %}
+                        <h6>Description</h6>
+                        <p>{{ message.desc }}</p>
+                    {% endif %}
+                </td>
+                <td>
+                    <pre id="div_{{ id|replace({' ': '_'}) }}"  class="divContent">{{ message.localeString|raw }}</pre>
+                    <textarea id="{{ id|replace({' ': '_'}) }}" data-id="{{ id }}" class="span6 {{ selectedDomain }}"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %} style="display:none;">{{ message.localeString }}</textarea></td>
+            </tr>
+            <tr>
+                <td style="border-left: 1px solid #DDD;">
+                    {#% if message.meaning is not empty %}
+                        <h6>Meaning</h6>
+                        <p>{{ message.meaning }}</p>
+                    {% endif %#}
+                
+                    {% if alternativeMessages[id] is defined %}
+                        <h6>Alternative Translations</h6>
+                        {% for locale, altMessage in alternativeMessages[id] %}
+                        <p>
+                            <strong>{{ locale }}:</strong> <pre>{{ altMessage.localeString|raw }}</pre>
+                        </p>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No messages found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

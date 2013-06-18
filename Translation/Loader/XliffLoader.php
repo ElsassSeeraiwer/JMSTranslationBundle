@@ -25,7 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 
 class XliffLoader implements LoaderInterface
 {
-    public function load($resource, $locale, $domain = 'messages')
+    public function load($resource, $locale, $domain = 'messages', $selresname = '')
     {
         $previous = libxml_use_internal_errors(true);
         if (false === $doc = simplexml_load_file($resource)) {
@@ -48,36 +48,39 @@ class XliffLoader implements LoaderInterface
             $id = ($resName = (string) $trans->attributes()->resname)
                        ? $resName : (string) $trans->source;
 
-            $m = Message::create($id, $domain)
-                    ->setDesc((string) $trans->source)
-                    ->setLocaleString((string) $trans->target)
-            ;
-            $catalogue->add($m);
+            if($selresname == '' || $id == $selresname)
+            {
 
-            if ($hasReferenceFiles) {
-                foreach ($trans->xpath('./jms:reference-file') as $file) {
-                    $line = (string) $file->attributes()->line;
-                    $column = (string) $file->attributes()->column;
-                    $m->addSource(new FileSource(
-                        (string) $file,
-                        $line ? (integer) $line : null,
-                        $column ? (integer) $column : null
-                    ));
-                }
-            }
+                $m = Message::create($id, $domain)
+                        ->setDesc((string) $trans->source)
+                        ->setLocaleString((string) $trans->target)
+                ;
+                $catalogue->add($m);
 
-            if ($meaning = (string) $trans->attributes()->extradata) {
-                if (0 === strpos($meaning, 'Meaning: ')) {
-                    $meaning = substr($meaning, 9);
+                if ($hasReferenceFiles) {
+                    foreach ($trans->xpath('./jms:reference-file') as $file) {
+                        $line = (string) $file->attributes()->line;
+                        $column = (string) $file->attributes()->column;
+                        $m->addSource(new FileSource(
+                            (string) $file,
+                            $line ? (integer) $line : null,
+                            $column ? (integer) $column : null
+                        ));
+                    }
                 }
 
-                $m->setMeaning($meaning);
-            }
+                if ($meaning = (string) $trans->attributes()->extradata) {
+                    if (0 === strpos($meaning, 'Meaning: ')) {
+                        $meaning = substr($meaning, 9);
+                    }
 
-            if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {
-                $m->setNew(false);
-            }
+                    $m->setMeaning($meaning);
+                }
 
+                if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {
+                    $m->setNew(false);
+                }
+            }
         }
 
         return $catalogue;

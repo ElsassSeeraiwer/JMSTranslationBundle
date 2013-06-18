@@ -48,6 +48,9 @@ class TranslateController
     /** @DI\Inject("%jms_translation.source_language%") */
     private $sourceLanguage;
 
+    /** @DI\Inject("%jms_translation.tinymce_mod%") */
+    private $tinymceMod;
+
     /**
      * @Route("/", name="jms_translation_index", options = {"i18n" = false})
      * @Template
@@ -78,11 +81,17 @@ class TranslateController
             $locale = reset($locales);
         }
 
+        $selresname = '';
+        if ((!$selresname = $this->request->query->get('resname')) || !isset($files[$domain][$locale])) {
+            $selresname = $this->request->query->get('resname');
+        }
+
         $catalogue = $this->loader->loadFile(
             $files[$domain][$locale][1]->getPathName(),
             $files[$domain][$locale][0],
             $locale,
-            $domain
+            $domain,
+            $selresname
         );
 
         // create alternative messages
@@ -98,15 +107,17 @@ class TranslateController
                 $files[$domain][$otherLocale][1]->getPathName(),
                 $files[$domain][$otherLocale][0],
                 $otherLocale,
-                $domain
+                $domain,
+                $selresname
             );
             foreach ($altCatalogue->getDomain($domain)->all() as $id => $message) {
                 $alternativeMessages[$id][$otherLocale] = $message;
             }
         }
 
-        $newMessages = $existingMessages = array();
+        $newMessages = $existingMessages = $allMessages = array();
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
+            $allMessages[$id] = $messages;
             if ($message->isNew()) {
                 $newMessages[$id] = $message;
                 continue;
@@ -122,13 +133,16 @@ class TranslateController
             'domains' => $domains,
             'selectedLocale' => $locale,
             'locales' => $locales,
+            'selectedResname' => $selresname,
             'format' => $files[$domain][$locale][0],
+            'allMessages' => $allMessages,
             'newMessages' => $newMessages,
             'existingMessages' => $existingMessages,
             'alternativeMessages' => $alternativeMessages,
             'isWriteable' => is_writeable($files[$domain][$locale][1]),
             'file' => (string) $files[$domain][$locale][1],
             'sourceLanguage' => $this->sourceLanguage,
+            'tinymceMod' => $this->tinymceMod,
         );
     }
 }
