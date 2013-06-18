@@ -92,7 +92,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <pre id="div_{{ id|replace({' ': '_'}) }}"  class="divContent">{{ message.localeString|raw }}</pre>
+                    <pre id="div_{{ id|replace({' ': '_'}) }}"  class="divContent" style="background-color:#C4EED2;cursor:pointer;">{{ message.localeString|raw }}</pre>
                     <textarea id="{{ id|replace({' ': '_'}) }}" data-id="{{ id }}" class="span6 {{ selectedDomain }}"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %} style="display:none;">{{ message.localeString }}</textarea></td>
             </tr>
             <tr>
