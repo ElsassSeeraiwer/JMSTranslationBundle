@@ -69,7 +69,7 @@
             {% for id, message in messages %}
             <tr>
                 <td rowspan="2">
-                    <a class="jms-translation-anchor" id="{{ id }}" />
+                    <a class="jms-translation-anchor" id="anchor_{{ id }}" />
                         <abbr title="{{ id }}">{{ id|truncate(20) }}</abbr>
                     </a>
                     
@@ -90,18 +90,18 @@
                         <h6>Description</h6>
                         <p>{{ message.desc }}</p>
                     {% endif %}
+
+                    {% if message.meaning is not empty %}
+                        <h6>Meaning</h6>
+                        <p>{{ message.meaning }}</p>
+                    {% endif %}
                 </td>
                 <td>
                     <pre id="div_{{ id|replace({' ': '_'}) }}"  class="divContent" style="background-color:#C4EED2;cursor:pointer;">{{ message.localeString|raw }}</pre>
                     <textarea id="{{ id|replace({' ': '_'}) }}" data-id="{{ id }}" class="span6 {{ selectedDomain }}"{% if isWriteable is sameas(false) %} readonly="readonly"{% endif %} style="display:none;">{{ message.localeString }}</textarea></td>
             </tr>
             <tr>
-                <td style="border-left: 1px solid #DDD;">
-                    {#% if message.meaning is not empty %}
-                        <h6>Meaning</h6>
-                        <p>{{ message.meaning }}</p>
-                    {% endif %#}
-                
+                <td style="border-left: 1px solid #DDD;">                
                     {% if alternativeMessages[id] is defined %}
                         <h6>Alternative Translations</h6>
                         {% for locale, altMessage in alternativeMessages[id] %}

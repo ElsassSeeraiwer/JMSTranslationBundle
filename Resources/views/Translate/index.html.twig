@@ -4,8 +4,35 @@
     {{ parent() }}
     
     <script language="javascript" type="text/javascript">
+        var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
+        var addMessagePath = {{ path("jms_translation_add_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
+        var configExtractPath = {{ path("jms_translation_config_extract", {"config": selectedConfig})|json_encode|raw }};
+        var indexPath = {{ path('jms_translation_index', {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale, "resname":""})|json_encode|raw }};
+
+        function newTranslationID(myId)
+        {
+            myId.replace(/^\s+/g,'').replace(/\s+$/g,'')
+            if(myId == '')return false;
+            $.ajax(addMessagePath + '?id=' + encodeURIComponent(myId), {
+                type: 'POST',
+                data: {'message': myId},
+                complete: function() {
+                    window.location.assign(indexPath+myId);
+                }
+            });
+        }
+
+        function extract()
+        {
+            $.ajax(configExtractPath, {
+                type: 'GET',
+                complete: function() {
+                    window.location.reload();
+                }
+            });
+        }
+
         $(document).ready(function() {
-            var updateMessagePath = {{ path("jms_translation_update_message", {"config": selectedConfig, "domain": selectedDomain, "locale": selectedLocale})|json_encode|raw }};
         
             $('#config select').change(function() {
                 $(this).parent().submit();
@@ -94,59 +121,6 @@
                             ]
                         });
                     })
-
-
-                    function mySave() {
-                        var self = this;
-                        console.log(this);
-                        /*$.ajax(updateMessagePath + '?id=' + encodeURIComponent($(this).data('id')), {
-                            type: 'POST',
-                            headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
-                            data: {'_method': 'PUT', 'message': $(this).val()},
-                            error: function() {
-                                $(self).parent().prepend('<div class="alert-message error">Translation could not be saved</div>');
-                            },
-                            success: function() {
-                                $(self).parent().prepend('<div class="alert-message success">Translation was saved.</div>');
-                            },
-                            complete: function() {
-                                var parent = $(self).parent();
-                                $(self).data('timeoutId', setTimeout(function() {
-                                    $(self).data('timeoutId', undefined);
-                                    parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
-                                }, 10000));
-                            }
-                        });*/
-                    }
-
-                    function myInit()
-                    {
-                        console.log(this);
-                    }
-
-                    /*tinymce.init({
-                        selector: "textarea",
-                        content_css: "/WebITRF/web/bundles/rsitemplate/css/rsi.css,/WebITRF/web/bundles/itrfwebsite/css/itrf.css",
-                        theme : 'modern',
-                        keep_styles: true,
-                        height : 300,
-                        plugins: "hr link table save print anchor searchreplace fullscreen charmap visualblocks image media nonbreaking autolink advlist contextmenu",
-                        toolbar1: "save | undo redo | removeformat | styleselect | fullscreen print | cut copy paste | searchreplace | hr anchor link table charmap visualblocks nonbreaking",
-                        toolbar2: "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | subscript superscript",
-                        contextmenu: "bold italic underline strikethrough | link image inserttable | cell row column deletetable",
-                        tools: "inserttable",
-                        nonbreaking_force_tab: true,
-                        save_enablewhendirty: true,
-                        save_onsavecallback: function() { toto = this;},
-                        style_formats : [
-                            {title: 'Titre 1', block: 'h2'},
-                            {title: 'Titre 2', block: 'h3'},
-                            {title: 'Titre 3', block: 'h4'},
-                            {title: 'Important', inline: 'span', styles: {color: '#ff0000'}},
-                            {title: 'Paragraphe important', block: 'p', classes: 'article'},
-                        ]
-                     });*/
-
                 {% endif %}
             {% endif %}
         });
@@ -154,7 +128,11 @@
 {% endblock %}
 
 {% block body %}
-    <form id="config" action="{{ path("jms_translation_index") }}" method="get">
+
+    <div style="display:inline-block;">
+        <input type="button" value="Extract" onclick="extract()" />
+    </div>
+    <form id="config" action="{{ path("jms_translation_index") }}" method="get" style="display:inline-block;">
         <select name="config" class="span3">
             {% for config in configs %}
             <option value="{{ config }}"{% if config == selectedConfig %} selected="selected"{% endif %}>{{ config }}</option>
@@ -173,13 +151,18 @@
             {% endfor %}
         </select>
         
-        <select name="resname" class="span5 resname">
+        <select id="selResname" name="resname" class="span5 resname">
             <option value=""{% if selectedResname == '' %} selected="selected"{% endif %}>ALL</option>
             {% for id, message in allMessages %}
             <option value="{{ id }}"{% if id == selectedResname %} selected="selected"{% endif %}>{{ id }}</option>
             {% endfor %}
         </select>
     </form>
+
+    <div style="display:inline-block;float:right;">
+        <input type="text" name="newTranslation" id="newID" value="" />
+        <input type="button" value="Add a new translation ID" onclick="newTranslationID($('#newID').val())" />
+    </div>
     
     {% if isWriteable is sameas(false) %}
     <div class="alert-message error">

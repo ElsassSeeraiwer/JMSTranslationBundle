@@ -23,8 +23,15 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
 use JMS\TranslationBundle\Util\FileUtils;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Translation\MessageCatalogue;
+
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Translate Controller.
@@ -144,5 +151,32 @@ class TranslateController
             'sourceLanguage' => $this->sourceLanguage,
             'tinymceMod' => $this->tinymceMod,
         );
+    }
+
+    /**
+     * @Route("/extraxt/{config}/",
+     *          name="jms_translation_config_extract",
+     *          options = {"i18n" = false})
+     * @Method("GET")
+     */
+    public function extractConfigAction(Request $request, $config)
+    {
+
+        $this->runCommand('translation:extract', array('--config' => $config));
+
+        return new Response('OK');
+    }
+
+    public function runCommand($command, $arguments = array())
+    {
+        $kernel = $this->container->get('kernel');
+        $app = new Application($kernel);
+
+        $args = array_merge(array('command' => $command), $arguments);
+
+        $input = new ArrayInput($args);
+        $output = new NullOutput();
+
+        return $app->doRun($input, $output);
     }
 }

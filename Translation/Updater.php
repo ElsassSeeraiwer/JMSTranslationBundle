@@ -112,6 +112,29 @@ class Updater
     }
 
     /**
+     * @param string $file
+     * @param string $format
+     * @param string $domain
+     * @param string $locale
+     * @param string $id
+     * @param string $trans
+     */
+    public function addTranslation($file, $format, $domain, $locale, $id, $trans)
+    {
+        $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
+
+        $Message = new Message($id, $domain);
+        $Message->setNew(true);
+
+        if(!$catalogue->has($Message))
+        {
+            $catalogue->add($Message);
+        }
+
+        $this->writer->write($catalogue, $domain, $file, $format);
+    }
+
+    /**
      * This writes any updates to the disk.
      *
      * This will not change files of ignored domains. It will also not
