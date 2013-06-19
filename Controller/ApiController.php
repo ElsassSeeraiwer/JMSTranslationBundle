@@ -82,7 +82,7 @@ class ApiController
      * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages/add",
      *          name="jms_translation_add_message",
      *          options = {"i18n" = false})
-     * @Method("POST")
+     * @Method("GET")
      */
     public function addMessageAction(Request $request, $config, $domain, $locale)
     {

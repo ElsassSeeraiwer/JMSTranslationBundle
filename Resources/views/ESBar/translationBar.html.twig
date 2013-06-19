@@ -6,35 +6,5 @@
 	            <span>Translation</span>
 	        </a>
 	    </div>
-
-	    {#<div class="eSeeraiwer-toolbar-info">
-	        <div class="eSeeraiwer-toolbar-info-piece">
-	            <a href="{{ path('lexik_translation_new') }}">
-	            	<span style="display:block;" class="eSeeraiwer-toolbar-status eSeeraiwer-toolbar-status-grey">Show grid</span>
-	            </a>
-	        </div>
-	        <div class="eSeeraiwer-toolbar-info-piece">
-	            <a href="{{ path('lexik_translation_new') }}">
-	            	<span style="display:block;" class="eSeeraiwer-toolbar-status eSeeraiwer-toolbar-status-green">New translation</span>
-	            </a>
-	        </div>
-	        <div class="eSeeraiwer-toolbar-info-piece">
-	            <a href="#" onclick="ajaxInvalidateCache();">
-	            	<span style="display:block;" class="eSeeraiwer-toolbar-status eSeeraiwer-toolbar-status-yellow">Invalidate cache</span>
-	            </a>
-	        </div>
-	    </div>#}
 	</div>
-	{#<script>
-		function ajaxInvalidateCache()
-		{
-			jQuery.ajax('{{ path('lexik_translation_invalidate_cache') }}',
-				{
-					success: function(){
-						window.location.reload();
-					}
-				}
-			);
-		}
-	</script>#}
 {% endif %}

@@ -14,7 +14,7 @@
             myId.replace(/^\s+/g,'').replace(/\s+$/g,'')
             if(myId == '')return false;
             $.ajax(addMessagePath + '?id=' + encodeURIComponent(myId), {
-                type: 'POST',
+                type: 'GET',
                 data: {'message': myId},
                 complete: function() {
                     window.location.assign(indexPath+myId);
