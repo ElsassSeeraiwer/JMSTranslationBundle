@@ -14,7 +14,7 @@
             myId.replace(/^\s+/g,'').replace(/\s+$/g,'')
             if(myId == '')return false;
             $.ajax(addMessagePath + '?id=' + encodeURIComponent(myId), {
-                type: 'GET',
+                type: 'POST',
                 data: {'message': myId},
                 complete: function() {
                     window.location.assign(indexPath+myId);
@@ -58,7 +58,7 @@
                                     $(self).data('timeoutId', setTimeout(function() {
                                         $(self).data('timeoutId', undefined);
                                         parent.children('.alert-message').fadeOut(300, function() { $(this).remove(); });
-                                    }, 10000));
+                                    }, 3000));
                                 }
                             });
                         })

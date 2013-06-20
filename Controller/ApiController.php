@@ -51,7 +51,7 @@ class ApiController
      * 			name="jms_translation_update_message",
      * 			defaults = {"id" = null},
      * 			options = {"i18n" = false})
-     * @Method("PUT")
+     * @Method({"GET", "PUT"})
      */
     public function updateMessageAction(Request $request, $config, $domain, $locale)
     {
@@ -82,7 +82,7 @@ class ApiController
      * @Route("/configs/{config}/domains/{domain}/locales/{locale}/messages/add",
      *          name="jms_translation_add_message",
      *          options = {"i18n" = false})
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
     public function addMessageAction(Request $request, $config, $domain, $locale)
     {
