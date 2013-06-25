@@ -1,4 +1,4 @@
-{% if is_granted('ROLE_SUPER_ADMIN') %}
+{% if is_granted(authorized_role|default('ROLE_SUPER_ADMIN')) %}
 	<div class="eSeeraiwer-toolbar-block" style="float:right;">
 	    <div class="eSeeraiwer-toolbar-icon">
 	        <a href="{{ path('jms_translation_index') }}">
