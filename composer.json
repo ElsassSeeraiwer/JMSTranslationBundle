@@ -34,6 +34,11 @@
         "sensio/framework-extra-bundle": "*",
         "jms/di-extra-bundle": ">=1.1"
     },
+    "suggest": {
+        "elsass-seeraiwer/user-bundle": "dev-master",
+        "elsass-seeraiwer/bar-bundle": "dev-master",
+        "elsass-seeraiwer/article-bundle": "dev-master"
+    },
     "autoload": {
         "psr-0": { "JMS\\TranslationBundle": "" }
     },
