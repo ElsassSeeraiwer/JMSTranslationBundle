@@ -118,6 +118,8 @@
         <service id="jms_translation.twig_extension" class="%jms_translation.twig_extension.class%">
             <argument type="service" id="translator" />
             <argument>%kernel.debug%</argument>
+            <argument type="service" id="jms_translation.config_factory"></argument>
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
             <tag name="twig.extension" />
         </service>
     </services>

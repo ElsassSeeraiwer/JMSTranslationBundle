@@ -1,0 +1,61 @@
+{% if is_granted(authorized_role) %}
+{% if jQuery == true %}
+    <script src="{{ asset("bundles/jmstranslation/js/jquery.min.js") }}"></script>
+{% endif %}
+
+<script language="javascript" type="text/javascript">
+    var updateMessagePath = {{ path("jms_translation_update_message", {"config": "MYCONFIG", "domain": "MYDOMAIN", "locale": "MYLOCAL"})|json_encode|raw }};
+
+    $(document).ready(function() {
+        inlineTransStatus = window.localStorage.getItem('inlineTransStatus');
+        if(inlineTransStatus == 1)
+        {
+            $('#inlineTransImgGrey').hide();
+            $('#inlineTransImgGreen').show();
+            $('a').click(function(){ return false; });
+        }
+        else if(inlineTransStatus == null)
+        {
+            window.localStorage.setItem('inlineTransStatus', 0);
+        }
+
+        $('span.transEdit')
+            .dblclick(function(){
+                if(window.localStorage.getItem('inlineTransStatus') != 1)
+                {
+                    return false;
+                }
+
+                var self = this;
+                $(self).hide();
+                var config = $(self).data('config');
+                var id = $(self).data('id');
+                var domain = $(self).data('domain');
+                var locale = $(self).data('locale');
+                var message = $(self).html();
+
+                $(self).after('<input type="text" class="transEdit" value="'+message+'">');
+                $('input.transEdit')
+                    .focus()
+                    .blur(function() {
+                        var selfInput = this;
+                        path = updateMessagePath.replace('MYCONFIG',config);
+                        path = path.replace('MYDOMAIN',domain);
+                        path = path.replace('MYLOCAL',locale);
+
+                        $.ajax(path + '?id=' + encodeURIComponent(id), {
+                            type: 'POST',
+                            headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
+                            data: {'_method': 'PUT', 'message': $(selfInput).val()},
+                            complete: function() {
+                                $(self).html($(selfInput).val());
+                                $(selfInput).remove();
+                                $(self).show();
+                            }
+                        });
+                    });
+            });
+        
+    });
+</script>
+{% endif %}

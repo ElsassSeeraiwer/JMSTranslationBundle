@@ -56,7 +56,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
         } else if ($node instanceof \Twig_Node_Expression_Filter) {
             $name = $node->getNode('filter')->getAttribute('value');
 
-            if ('trans' === $name || 'transchoice' === $name) {
+            if ('trans' === $name || 'transchoice' === $name || 'transEdit' === $name || 'transchoiceEdit' === $name) {
                 $idNode = $node->getNode('node');
                 if (!$idNode instanceof \Twig_Node_Expression_Constant) {
                     return $node;

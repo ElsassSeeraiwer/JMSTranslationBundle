@@ -1,10 +1,38 @@
 {% if is_granted(authorized_role|default('ROLE_SUPER_ADMIN')) %}
 	<div class="eSeeraiwer-toolbar-block" style="float:right;">
 	    <div class="eSeeraiwer-toolbar-icon">
+	        <a onclick="toggleInlineTransStatus();" title="Activate/Desactivate inline translation." style="cursor:pointer;">
+	            <img id="inlineTransImgGrey" alt="inline-translation" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAACISAAAiEgG/ZH/cAAAAB3RJTUUH3QYbDBorf6d6kAAAActJREFUeNrtnFkSgjAQRE3kYLkEp+CSHMzt17K0kM5ktnT/ujHPngUIuVwoiqIoiqJMVdAP7vv+zACgtVZUwGUB1guwEBoGrxAaBq8QGgavSEJDC62WJGNZrLqStZN6s6ig/1AkYCNirBxlMdXs6TkqFjoO1JIxqM+6NSJDarY0/VbsjzooElPN7LTP1yQH+elqnBS8SiATg7M4l84Ark7zo8JuuxOcQopKjVNhwa3rerWcQcOC27btNl1hjZyiYcF5gDblmcOU4Ly4LRQ4T9CYqtnBeXNbCHAeoTFVO7RouAR1gFe3DXEccs0/GjRxcEfX/NlVQTD/wvPuNjFwZwI9em8EaGZdNUPamo0jUk3E6ga56Rz3DioSNDFwPQFETVsxx2nDs17DIpqqWsF4WPhTowXVWrumSlVFeI/U48gIeJ7W5tXBaVUEv8vVJbDhByMI7zkVOAl4HpfPqtkfDd7rmmPVupHp+Qj1gnsGnmfQJp3qHyDe3XkanNRJuScwSEyms9EveBFqofkjSVEbRtWytlehsfBOPqjuZ/KjplpvXIvkAWTazKDbcdlqmlTD4oYtYOnhFkFgveamVGB95jZoia7YUBRFURQ1lV4/7PmCM31BIAAAAABJRU5ErkJggg==">
+	            <img style="display:none;" id="inlineTransImgGreen" alt="inline-translation" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAACISAAAiEgG/ZH/cAAAAB3RJTUUH3QYbDBoI3cAL4gAAAdlJREFUeNrtnNlxwkAQRNlBWTgFR0EOCsJRUE7Mn86ELLDhl6LsEuqdnWu7f7k0j55D0moPB4qiKIqiKFc19IOfX2+3CgDOp0szAVcFWC/ARmgYvEZoGLxGaBi8pgkNLbRW0oxl8epK3k7qzaKG/kOZgI2IUTjKYpLq6TkqFjoO1FIxqOe6NSJDpFqa/lXstzooEpNUdtrza5qD/HQ1TgueEMjE4DzOpSuAk2l+VNltPwRnkKJa41RacOu6Hj1n0LTg3j++r9MV1swpmhZcBGhTnjlMCS6K21KBiwSNqVodXDS3pQAXERpTtUOLhUtQB0R12xDHIdf8s0FTB7d1zZ9dFQTzKrzoblMDtyfQrfdmgObWVSukrds4otVEvG6Qu85xj6AyQVMD1xNA1rRVc5w1PO81LKqpahVMhIU/ki2o8+lyLJWqhvB+S48jI+BFWpsng9OqKX5XqEtgww9GEd5tKnAa8CIunzWzPxp81DXHpnWj0vMR5gV3D7zIoF061StAortzNzitk/JIYJCYXGej/+BlqIXujyRlbRhiZe2oQmPhnXxQ3c/kZ0213rgWzQOotJlBt+Oq1TSthsUNW8DSwy2CwHrNTanA+sxt0ApdsaEoiqIoairdASQV/ho+2z4QAAAAAElFTkSuQmCC">
+	        </a>
+	    </div>
+	</div>
+	<div class="eSeeraiwer-toolbar-block" style="float:right;">
+	    <div class="eSeeraiwer-toolbar-icon">
 	        <a href="{{ path('jms_translation_index') }}">
 	            <img width="0" height="28" alt="" src="">
 	            <span>Translation</span>
 	        </a>
 	    </div>
 	</div>
+	<script>
+		function toggleInlineTransStatus()
+		{
+			inlineTransStatus = window.localStorage.getItem('inlineTransStatus');
+			if(inlineTransStatus == 0)
+			{
+				$('#inlineTransImgGrey').hide();
+				$('#inlineTransImgGreen').show();
+				$('a').click(function(){ return false; });
+				window.localStorage.setItem('inlineTransStatus', 1);
+			}
+			else if(inlineTransStatus == 1)
+			{
+				$('#inlineTransImgGrey').show();
+				$('#inlineTransImgGreen').hide();
+				window.localStorage.setItem('inlineTransStatus', 0);
+				window.location.reload();
+			}
+		}
+	</script>
 {% endif %}
