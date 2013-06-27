@@ -65,7 +65,7 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                 }
                 $id = $idNode->getAttribute('value');
 
-                $index = 'trans' === $name ? 1 : 2;
+                $index = ('trans' === $name || 'transEdit' === $name) ? 1 : 2;
                 $domain = 'messages';
                 $arguments = $node->getNode('arguments');
                 if ($arguments->hasNode($index)) {
@@ -75,7 +75,6 @@ class TwigFileExtractor implements FileVisitorInterface, \Twig_NodeVisitorInterf
                         // FIXME: Throw exception if there is some way for the user to turn this off
                         //        on a case-by-case basis, similar to @Ignore in PHP
                     }
-
                     $domain = $argument->getAttribute('value');
                 }
 
