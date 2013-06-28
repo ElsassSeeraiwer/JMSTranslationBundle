@@ -27,18 +27,19 @@
                 }
 
                 var self = this;
-                $(self).hide();
-                var config = $(self).data('config');
-                var id = $(self).data('id');
-                var domain = $(self).data('domain');
-                var locale = $(self).data('locale');
-                var message = $(self).html();
+                $(self).attr('contenteditable', 'true');
+                $(self).css('outline', '3px dashed #04F427');
 
-                $(self).after('<input type="text" class="transEdit" value="'+message+'">');
-                $('input.transEdit')
+                var config =    $(self).data('config');
+                var id =        $(self).data('id');
+                var domain =    $(self).data('domain');
+                var locale =    $(self).data('locale');
+                var message =   $(self).html();
+
+                $(self)
                     .focus()
                     .blur(function() {
-                        var selfInput = this;
+                        var selfMod = this;
                         path = updateMessagePath.replace('MYCONFIG',config);
                         path = path.replace('MYDOMAIN',domain);
                         path = path.replace('MYLOCAL',locale);
@@ -46,11 +47,10 @@
                         $.ajax(path + '?id=' + encodeURIComponent(id), {
                             type: 'POST',
                             headers: {'X-HTTP-METHOD-OVERRIDE': 'PUT'},
-                            data: {'_method': 'PUT', 'message': $(selfInput).val()},
+                            data: {'_method': 'PUT', 'message': $(selfMod).html()},
                             complete: function() {
-                                $(self).html($(selfInput).val());
-                                $(selfInput).remove();
-                                $(self).show();
+                                $(selfMod).attr('contenteditable', 'false');
+                                $(selfMod).css('outline', '0px');
                             }
                         });
                     });
