@@ -62,7 +62,7 @@ class Configuration implements ConfigurationInterface
                                     ->prototype('scalar')->end()
                                 ->end()
                                 ->arrayNode('dirs')
-                                    ->requiresAtLeastOneElement()
+                                    //->requiresAtLeastOneElement()
                                     ->prototype('scalar')
                                         ->validate()
                                             ->always(function($v) use ($c) {
