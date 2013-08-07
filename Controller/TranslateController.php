@@ -124,7 +124,7 @@ class TranslateController
 
         $newMessages = $existingMessages = $allMessages = array();
         foreach ($catalogue->getDomain($domain)->all() as $id => $message) {
-            $allMessages[$id] = $messages;
+            $allMessages[$id] = $message;//messages ??
             if ($message->isNew()) {
                 $newMessages[$id] = $message;
                 continue;
